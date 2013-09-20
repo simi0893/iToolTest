@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!--
+       Licensed to the Apache Software Foundation (ASF) under one
+       or more contributor license agreements.  See the NOTICE file
+       distributed with this work for additional information
+       regarding copyright ownership.  The ASF licenses this file
+       to you under the Apache License, Version 2.0 (the
+       "License"); you may not use this file except in compliance
+       with the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing,
+       software distributed under the License is distributed on an
+       "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+       KIND, either express or implied.  See the License for the
+       specific language governing permissions and limitations
+       under the License.
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>Hello World</title>
+    </head>
+    <body>
+        <div class="app">
+            <h1 id="bla">Neue Adresse erfassen</h1>
+            <div id="deviceready" class="blink">
+                <p class="event listening">Connecting to Device</p>
+                <p class="event received">Device is Ready</p>
+            </div>
+          <div>
+            <form>
+              <fieldset>
+                <table>
+                <tr>
+              <label for="Name">Name</label>
+              <input type="text" id="Name"></input>
+                </tr>
+              <label for="Vorname">Vorname</label>
+              <input type="text" id="Vorname"/>
+              <label for="Titel">Titel</label>
+              <input type="text" id="Titel"/>
+              <label for="Telefonnr">Privat</label>
+              <input type="text" id="Telefonnr"/>
+              <label for="gesch">Geschäftlich</label>
+              <input type="text" id="gesch"/>
+              <label for="mobil">Mobiltelefon</label>
+              <input type="text" id="mobil"/>
+                </table>
+              </fieldset>
+          </form>
+            <HR></HR>
+            <label for="check">Zusätzlich im Telefonbuch speichern</label>
+            <input type="checkbox" id="check"/>
+            <HR/>
+            <input type="button" id="submit" value="Speichern"/>
+          </div>
+        <script type="text/javascript" src="phonegap.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+          app.initialize();
+          var submit = document.getElementById('submit');
+          
+          // Speichern-Button Click-Handler
+
+          submit.onclick = function(){
+
+          // Telefonnummern aus Formular
+          var nr = document.getElementById('Telefonnr');
+
+          var gesch = document.getElementById('gesch');
+          var mobil = document.getElementById('mobil');
+
+          // Namen aus Formular
+          var name = document.getElementById('Name');
+          var vorname = document.getElementById('Vorname');
+          var titel = document.getElementById('Titel');
+
+          //Initialisieren von names
+          names = new ContactName();
+          names.familyName = name.value;
+          names.givenName = vorname.value;
+          names.honorificPrefix = titel.value;
+
+          // Initialisiern von phoneNumbers
+          phoneNumbers = [];
+          phoneNumbers[0] = new ContactField('home', nr.value , false);
+          phoneNumbers[1] = new ContactField('work', gesch.value , false);
+          phoneNumbers[2] = new ContactField('mobile', mobil.value , false);
+
+          // Checkbox
+          var check = document.getElementById('check');
+          // wenn die Checkbox angehakt ist
+          if(check.checked == true){
+
+              var contact = navigator.contacts.create();
+              contact.phoneNumbers = phoneNumbers;
+              contact.name = names;
+              contact.save();
+          }
+
+          else {
+            navigator.notification.confirm('Möchten Sie den Kontakt auch zum Telefonbuch hinzufügen?', onconfirm, 'Kontakt erfolgreich gespeichert.', 'Ja., Nein.');
+          }
+          
+          };
+
+          function onconfirm(buttonindex){
+
+              if(buttonindex == 1)
+              {
+                  var contact = navigator.contacts.create();
+                  contact.phoneNumbers = phoneNumbers;
+                  contact.name = names;
+                  contact.save();
+              }
+          }
+
+        </script>
+    </body>
+</html>
